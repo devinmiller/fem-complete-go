@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
- 
+tmux neww -n nvim
+tmux neww -dn live-reload
+tmux neww -dn scratch

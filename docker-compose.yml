@@ -2,7 +2,7 @@ name: fem-complete-go
 
 services:
   dev:
-    container_name: "workoutAPI"
+    container_name: "fem-complete-go-env"
     image: dimwittedmonkey/dev-env:latest
     volumes:
       - "~/Src/github.com/devinmiller:/workspace"
@@ -10,7 +10,7 @@ services:
       - "8081:8081"
     restart: unless-stopped
   db:
-    container_name: "workoutDB"
+    container_name: "fem-complete-go-db"
     image: postgres:12.4-alpine
     volumes:
       - "./database/postgres-data:/var/lib/postgresql/data:rw"
