@@ -5,7 +5,7 @@ services:
     container_name: "fem-complete-go-env"
     image: dimwittedmonkey/dev-env:latest
     volumes:
-      - "~/Src/github.com/devinmiller:/workspace"
+      - "~/Src:/workspace"
     ports:
       - "8081:8081"
     restart: unless-stopped

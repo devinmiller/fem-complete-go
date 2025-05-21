@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
-tmux neww -n nvim
+tmux rename-window -t 1 "nvim"
+
+tmux send-keys -t "nvim" "nvim ." Enter
+
 tmux neww -dn live-reload
 tmux neww -dn scratch
+
