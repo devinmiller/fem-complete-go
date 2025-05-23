@@ -1,9 +1,18 @@
 #!/usr/bin/env bash
 
-tmux rename-window -t 1 "nvim"
+# make sure goose is installed
+go install github.com/pressly/goose/v3/cmd/goose@latest
+# make sure the postgreql client is intalled
+apt install -y postgreql-client
 
-tmux send-keys -t "nvim" "nvim ." Enter
+# rename default window and launch nvim
+tmux rename-window -t 1 "nvim"
+tmux send-keys -t nvim "nvim ." Enter
 
 tmux neww -dn live-reload
+
+tmux neww -dn psql
+tmux send-keys -t psql "PGPASSWORD=postgres psql -U postgres -h fem-complete-go-db -p 5432" Enter
+
 tmux neww -dn scratch
 

@@ -2,7 +2,7 @@ name: fem-complete-go
 
 services:
   dev:
-    container_name: "fem-complete-go-env"
+    container_name: "fem-complete-go-dev"
     image: dimwittedmonkey/dev-env:latest
     volumes:
       - "${SOURCE:-~/src}:/workspace"
