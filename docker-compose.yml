@@ -8,6 +8,9 @@ services:
       - "${SOURCE:-~/src}:/workspace"
     ports:
       - "8081:8081"
+    environment:
+      UID: "${UID}"
+      GID: "${GID}"
     restart: unless-stopped
   db:
     container_name: "fem-complete-go-db"
