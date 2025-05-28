@@ -24,3 +24,15 @@ services:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
     restart: unless-stopped
+  test_db:
+    container_name: "fem-complete-go-test-db"
+    image: postgres:12.4-alpine
+    volumes:
+      - "./database/postgres-data:/var/lib/postgresql/data:rw"
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    restart: unless-stopped
