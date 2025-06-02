@@ -2,6 +2,7 @@ package store
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -10,6 +11,31 @@ import (
 type password struct {
 	plainText *string
 	hash      []byte
+}
+
+func (p *password) Set(plaintextPassword string) error {
+	hash, err := bcrypt.GenerateFromPassword([]byte(plaintextPassword), 12)
+	if err != nil {
+		return err
+	}
+
+	p.plainText = &plaintextPassword
+	p.hash = hash
+	return nil
+}
+
+func (p *password) Matches(plaintextPassword string) (bool, error) {
+	err := bcrypt.CompareHashAndPassword(p.hash, []byte(plaintextPassword))
+	if err != nil {
+		switch {
+		case errors.Is(err, bcrypt.ErrMismatchedHashAndPassword):
+			return false, nil
+		default:
+			return false, err
+		}
+	}
+
+	return true, nil
 }
 
 type User struct {
@@ -53,7 +79,7 @@ func (s *PostgresUserStore) CreateUser(user *User) error {
 	return nil
 }
 
-func (s *PostgresUserStore) GetUserByUsername(username string) (*User, err) {
+func (s *PostgresUserStore) GetUserByUsername(username string) (*User, error) {
 	user := &User{
 		PasswordHash: password{},
 	}
@@ -65,7 +91,7 @@ func (s *PostgresUserStore) GetUserByUsername(username string) (*User, err) {
 	`
 
 	err := s.db.QueryRow(query, username).Scan(
-		&user.ID, &user.Username, &user.Email, &user.PasswordHash.hash, &user.Bio, &user.CreatedAt, &user.UpdatedAt
+		&user.ID, &user.Username, &user.Email, &user.PasswordHash.hash, &user.Bio, &user.CreatedAt, &user.UpdatedAt,
 	)
 
 	if err == sql.ErrNoRows {
@@ -92,7 +118,7 @@ func (s *PostgresUserStore) UpdateUser(user *User) error {
 		return err
 	}
 
-	rowAfftected, err = result.RowsAffected()
+	rowAfftected, err := result.RowsAffected()
 	if err != nil {
 		return err
 	}
