@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/devinmiller/fem-complete-go/internal/api"
+	"github.com/devinmiller/fem-complete-go/internal/middleware"
 	"github.com/devinmiller/fem-complete-go/internal/store"
 	"github.com/devinmiller/fem-complete-go/migrations"
 )
@@ -16,6 +17,8 @@ type Application struct {
 	Logger         *log.Logger
 	WorkoutHandler *api.WorkoutHandler
 	UserHandler    *api.UserHandler
+	TokenHandler   *api.TokenHandler
+	Middleware     middleware.UserMiddleware
 	DB             *sql.DB
 }
 
@@ -33,17 +36,22 @@ func NewApplication() (*Application, error) {
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 
 	// our stores will go here
-	workouStore := store.NewPostgresWorkoutStore(pgDB)
+	workoutStore := store.NewPostgresWorkoutStore(pgDB)
 	userStore := store.NewPostgresUserStore(pgDB)
+	tokenStore := store.NewPostgresTokenStore(pgDB)
 
 	// our handlers will go here
-	workoutHandler := api.NewWorkoutHandler(workouStore, logger)
+	workoutHandler := api.NewWorkoutHandler(workoutStore, logger)
 	userHandler := api.NewUserhandler(userStore, logger)
+	tokenHandler := api.NewTokenHandler(tokenStore, userStore, logger)
+	middlewareHandler := middleware.UserMiddleware{UserStore: userStore}
 
 	app := &Application{
 		Logger:         logger,
 		WorkoutHandler: workoutHandler,
 		UserHandler:    userHandler,
+		TokenHandler:   tokenHandler,
+		Middleware:     middlewareHandler,
 		DB:             pgDB,
 	}
 
