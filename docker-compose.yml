@@ -6,7 +6,7 @@ services:
     image: "${IMAGE:-dimwittedmonkey}/dev-gopsql:latest"
     volumes:
       - "${SOURCE:-~/src}:/workspace"
-      - "${SSH:-~/.ssh}:/homeneodev/.ssh"
+      - "${SSH:-~/.ssh}:/home/neodev/.ssh"
     ports:
       - "${PORT:-8081}:8081"
     restart: unless-stopped
