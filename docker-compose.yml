@@ -3,14 +3,12 @@ name: fem-complete-go
 services:
   dev:
     container_name: "fem-complete-go-dev"
-    image: dimwittedmonkey/dev-env:latest
+    image: "${IMAGE:-dimwittedmonkey}/dev-gopsql:latest"
     volumes:
       - "${SOURCE:-~/src}:/workspace"
+      - "${SSH:-~/.ssh}:/homeneodev/.ssh"
     ports:
-      - "8081:8081"
-    environment:
-      UID: "${UID}"
-      GID: "${GID}"
+      - "${PORT:-8081}:8081"
     restart: unless-stopped
   db:
     container_name: "fem-complete-go-db"
